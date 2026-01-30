@@ -1,2 +1,1 @@
-# btg-bikeshare
-Bipartite-Temporal-Graph for Linking Bike-Sharing Stations with Urban Context
+# Beyond Spatial Grids: A Temporal Knowledge Graph for Linking Micromobility Origin/Destination Locations with Urban Context

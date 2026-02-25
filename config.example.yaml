@@ -1,0 +1,23 @@
+mode: "api" # api or graph
+
+database: # Database connection settings
+  user: "" # Database username
+  password: "" # Database password
+  host: "timescaledb" # Database host
+  port: 5432 # Database port
+  dbname: "" # Database name
+
+processing: # Processing-related settings
+  enable_private_score: true # Whether to enable private score computation
+  private_cap_threshold: 0.7 # Threshold for private capacity filtering
+  location: # Location-specific settings
+    city_name: "Mannheim" # Name of the city to process
+    network_names: # List of network names to process
+      - N-MH
+    year: 2023 # Year of the data to process
+  osm: # OSM-related settings
+    enable_others_category:  # Whether to enable the 'others' category for POIs
+  data_preparation: # Data preparation settings
+    max_air_distance_km: 0.5 # Maximum air distance in kilometers for associating POIs to odlocations
+    max_walking_distance: 350 # Maximum walking distance in meters for associating POIs to odlocations
+    osrm_endpoint: "http://osrm:5000/route/v1/foot/" # OSRM endpoint for routing

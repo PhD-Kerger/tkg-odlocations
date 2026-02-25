@@ -1,0 +1,13 @@
+sqlalchemy
+psycopg[binary]
+pandas
+scikit-learn
+numpy
+tqdm
+requests
+networkx
+lxml
+folium
+matplotlib
+geopandas
+pyyaml

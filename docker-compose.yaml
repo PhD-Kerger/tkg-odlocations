@@ -1,0 +1,15 @@
+services:
+  btg:
+    image: tkg:latest
+    container_name: tkg
+    volumes:
+      - ./src:/app/src
+      - ./main.py:/app/main.py
+      - ./config.yaml:/app/config.yaml
+      - ./data:/app/data
+    networks:
+      - mobility-network
+
+networks:
+  mobility-network:
+    external: true

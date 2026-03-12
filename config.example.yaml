@@ -1,5 +1,3 @@
-mode: "api" # api or graph
-
 database: # Database connection settings
   user: "" # Database username
   password: "" # Database password

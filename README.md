@@ -22,9 +22,9 @@ Unlike traditional grid-based or hexagonal tessellation approaches, this framewo
 - **Temporal modeling**: Incorporates opening hours and daily activity patterns
 - **Distance-aware**: Uses OSRM routing for realistic walking distances with exponential decay
 - **Semantic balancing**: IDF weighting prevents dominance of frequent POI categories
-- **Two output modes**:
-  - **Graph mode**: Interactive visualization maps
-  - **API mode**: JSON embeddings for machine learning features
+- **Two outputs**:
+  - **Map**: Interactive visualization maps
+  - **API**: JSON embeddings for machine learning features
 - **Optional private trips**: Integrates land-use for non-POI destinations
 
 ## Requirements
@@ -89,15 +89,6 @@ docker-compose up -d
 
 The `config.yaml` file controls all aspects of the pipeline:
 
-### Mode Selection
-
-```yaml
-mode: "map" # "api" or "map"
-```
-
-- **map**: Generates interactive visualization map
-- **api**: Processes single coordinates and returns JSON embeddings
-
 ### Database Connection
 
 ```yaml
@@ -134,12 +125,10 @@ processing:
 
 ## Usage
 
-### Graph Mode (Visualization)
-
-Generate an interactive map showing all stations with their POI embeddings:
+Process a single coordinate and get JSON embeddings:
 
 ```bash
-python main.py
+docker exec tkg /app/run.sh 49.477,8.464,University
 ```
 
 Output: An interactive Folium map saved to the workspace showing:
@@ -149,21 +138,13 @@ Output: An interactive Folium map saved to the workspace showing:
 - Edge weights
 - Temporal embeddings for each hour/weekday
 
-### API Mode (Single or Multiple Coordinates)
-
-Process a single coordinate and get JSON embeddings:
-
-```bash
-python main.py 49.4875,8.4660,university
-```
-
-**Response Format**:
+**JSON Response Format**:
 
 ```json
 {
   "latitude": 49.4875,
   "longitude": 8.466,
-  "name": "University Station",
+  "name": "University",
   "type": "odlocation",
   "landuse": {
     "work_percentage": 0.0386,
@@ -198,6 +179,5 @@ python main.py 49.4875,8.4660,university
 To process multiple coordinates, provide them separated by +:
 
 ```bash
-python main.py 49.4875,8.4660,university+49.4900,8.4700,park
+docker exec tkg /app/run.sh 49.477,8.464,University+49.480,8.470,Park
 ```
-The response will be a list of JSON objects for each coordinate.

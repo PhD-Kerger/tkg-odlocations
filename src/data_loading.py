@@ -46,44 +46,6 @@ class DataLoader:
             log_file_path=Path("logs") / "logs.log",
         )
 
-    def load_odlocations(self) -> pd.DataFrame:
-        """
-        Loads all odlocations in network {self.network_name} with their important features
-        """
-        query = f"""
-        SELECT 
-            sl.station_id AS odlocation_id,
-            sl.network_name,
-            sl.location_id,
-            sl.station_name as odlocation_name,
-            ST_X(sl.location::geometry) as longitude,
-            ST_Y(sl.location::geometry) as latitude,
-            CASE 
-                WHEN sl.last_seen::text LIKE '2025%' THEN 'aktiv'
-                ELSE 'inaktiv'
-            END as status
-        FROM public.station_lifespans sl
-        WHERE sl.location IS NOT NULL 
-        AND sl.station_name not LIKE '%BIKE%'
-        AND sl.station_name not LIKE '%recording%'
-        AND sl.network_name in ({', '.join([f"'{net}'" for net in self.network_name])})
-        ORDER BY sl.last_seen DESC;
-        """
-
-        with self.engine.connect() as conn:
-            odlocations_df = pd.read_sql(text(query), conn)
-        self.logger.info(
-            f"Loaded O/D-Locations in Network {self.network_name}: {len(odlocations_df)}"
-        )
-        odlocations_df = odlocations_df.drop_duplicates(
-            subset=["odlocation_id"], keep="first"
-        )
-        self.logger.info(
-            f"After removing duplicates, {len(odlocations_df)} unique O/D-Locations remain."
-        )
-
-        return odlocations_df
-
     def load_pois(self) -> pd.DataFrame:
         """
         Loads all POIs with their important features

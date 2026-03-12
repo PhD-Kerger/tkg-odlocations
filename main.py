@@ -46,17 +46,13 @@ class SpatialContextEmbedder:
             "enable_private_score", False
         )
         self.private_cap_threshold = self.config["processing"].get("private_cap_threshold", 0.7)
-        # mode: "api" # api or map
-        self.mode = self.config.get("mode", "map")
-        if self.mode == "api":
-            self.logger.info("Initializing in API mode.")
-            # coordinates are first CLI argument
-            self.coordinates = sys.argv[1] if len(sys.argv) > 1 else None
-            if not self.coordinates:
-                self.logger.error("No coordinates provided for API mode.")
-                sys.exit(1)
-        else:
-            self.coordinates = None
+
+
+        # coordinates are first CLI argument
+        self.coordinates = sys.argv[1] if len(sys.argv) > 1 else None
+        if not self.coordinates:
+            self.logger.error("No coordinates provided.")
+            sys.exit(1)
 
         self.data_loader = DataLoader(
             engine=self.db_engine.engine,
@@ -71,14 +67,8 @@ class SpatialContextEmbedder:
         Main method to run the Spatial Context Embedding pipeline.
         """
         self.logger.info("Running Spatial Context Embedding Pipeline...")
-        if self.mode == "api":
-            self.logger.info("API Mode Initialization Phase Started")
-            api = API(coordinates=self.coordinates, config_name=self.config_name)
-            odlocations_df = api.data
-        else:
-            # Load coordinates and POIs
-            self.logger.info("Graph Mode Initialization Phase Started")
-            odlocations_df = self.data_loader.load_odlocations()
+        api = API(coordinates=self.coordinates, config_name=self.config_name)
+        odlocations_df = api.data
 
         prep_config = self.config["processing"]["data_preparation"]
         self.data_preparation = DataPreparation(
@@ -121,12 +111,10 @@ class SpatialContextEmbedder:
 
         self.graph_constructer.construct_graph()
 
-        if self.mode == "api":
-            results = api.process_coordinates(self.graph_constructer.get_graph())
-            return results
-        else:
-            self.visualizer = Visualizer(self.graph_constructer.get_graph(), self.config_name)
-            self.visualizer.plot_graph_map()
+        results = api.process_coordinates(self.graph_constructer.get_graph())
+        self.visualizer = Visualizer(self.graph_constructer.get_graph(), self.config_name)
+        self.visualizer.plot_graph_map()
+        return results
 
 
 if __name__ == "__main__":

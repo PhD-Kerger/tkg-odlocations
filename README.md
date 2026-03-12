@@ -149,7 +149,7 @@ Output: An interactive Folium map saved to the workspace showing:
 - Edge weights
 - Temporal embeddings for each hour/weekday
 
-### API Mode (Single Coordinate)
+### API Mode (Single or Multiple Coordinates)
 
 Process a single coordinate and get JSON embeddings:
 
@@ -194,3 +194,10 @@ python main.py 49.4875,8.4660,university
   }
 }
 ```
+
+To process multiple coordinates, provide them separated by +:
+
+```bash
+python main.py 49.4875,8.4660,university+49.4900,8.4700,park
+```
+The response will be a list of JSON objects for each coordinate.

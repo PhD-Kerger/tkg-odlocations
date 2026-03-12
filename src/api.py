@@ -20,13 +20,13 @@ class API:
         self.logger.info(coordinates)
         self.coordinates = []
         if coordinates:
-            if ";" not in coordinates:
+            if "+" not in coordinates:
                 parts = coordinates.split(",")
                 lat, lon = map(float, parts[:2])
                 station_name = parts[2] if len(parts) > 2 else None
                 self.coordinates = [(lat, lon, station_name)]
             else:
-                for coord in coordinates.split(";"):
+                for coord in coordinates.split("+"):
                     parts = coord.split(",")
                     lat, lon = map(float, parts[:2])
                     station_name = parts[2] if len(parts) > 2 else None
@@ -55,6 +55,7 @@ class API:
             )
         self.data = pd.DataFrame(data)
         self.logger.info("DataFrame generated successfully.")
+        print(self.data.head())
 
     def process_coordinates(self, G: nx.Graph):
         """
@@ -93,6 +94,8 @@ class API:
                     category,
                     days_data,
                 ) in initial_weight_time_x_decay_x_tfidf_weight.items():
+                    if category not in static_embedding:
+                        static_embedding[category] = {"overall": 0.0}
                     day_values = []
                     night_values = []
                     for day, hours_data in days_data.items():

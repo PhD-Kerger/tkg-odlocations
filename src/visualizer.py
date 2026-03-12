@@ -11,8 +11,9 @@ from .logger import Logger
 
 
 class Visualizer:
-    def __init__(self, G):
+    def __init__(self, G, config_name="default"):
         self.G = G
+        self.config_name = config_name
 
         self.logger = Logger.get_logger(
             name=self.__class__.__name__,
@@ -216,11 +217,11 @@ class Visualizer:
             folium.LayerControl().add_to(m)
 
             # Save the map as HTML
-            if not os.path.exists(Path("data") / "maps"):
-                os.makedirs(Path("data") / "maps")
+            if not os.path.exists(Path("data") / self.config_name / "maps"):
+                os.makedirs(Path("data") / self.config_name / "maps")
 
-            m.save(Path("data") / "maps" / "graph_visualization_map.html")
-            self.logger.info("Map saved to data/maps/graph_visualization_map.html")
+            m.save(Path("data") / self.config_name / "maps" / "graph_visualization_map.html")
+            self.logger.info(f"Map saved to data/{self.config_name}/maps/graph_visualization_map.html")
         else:
             self.logger.error(
                 "No valid node coordinates found. Map could not be created."
@@ -238,7 +239,7 @@ class Visualizer:
         """
 
         # Define cache directory and file path
-        cache_dir = Path("data") / "chart_cache"
+        cache_dir = Path("data") / self.config_name / "chart_cache"
         cache_dir.mkdir(parents=True, exist_ok=True)
         cache_file = cache_dir / f"static_chart_{node}.png"
 
@@ -390,7 +391,7 @@ class Visualizer:
         }
 
         # Define cache directory and file path
-        cache_dir = Path("data") / "chart_cache" / chart_type
+        cache_dir = Path("data") / self.config_name / "chart_cache" / chart_type
         cache_dir.mkdir(parents=True, exist_ok=True)
         cache_file = cache_dir / f"time_based_chart_{node}.png"
 

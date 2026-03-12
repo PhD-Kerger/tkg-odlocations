@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 
 class API:
-    def __init__(self, coordinates: list = None):
+    def __init__(self, coordinates: list = None, config_name: str = "default"):
         # Setup logger as class attribute
         self.logger = Logger.get_logger(
             name=self.__class__.__name__,
@@ -17,7 +17,7 @@ class API:
         # station_name is optional (third parameter after lat,lon)
         # make list of tuples by splitting on ';' and then on ','
 
-        self.logger.info(coordinates)
+        self.config_name = config_name
         self.coordinates = []
         if coordinates:
             if "+" not in coordinates:
@@ -55,7 +55,6 @@ class API:
             )
         self.data = pd.DataFrame(data)
         self.logger.info("DataFrame generated successfully.")
-        print(self.data.head())
 
     def process_coordinates(self, G: nx.Graph):
         """
@@ -149,7 +148,7 @@ class API:
                 self.logger.info(f"Generating time-based charts for {name} ({node})...")
 
                 # Create output directory for API charts
-                charts_dir = Path("data") / "api" / "charts"
+                charts_dir = Path("data") / self.config_name / "api" / "charts"
                 charts_dir.mkdir(parents=True, exist_ok=True)
 
                 chart_files = {}
@@ -196,7 +195,7 @@ class API:
 
                 results.append(result)
                 # export to file in data/api/jsons/{lat}_{lon}_results.json
-                output_dir = Path("data") / "api" / "jsons"
+                output_dir = Path("data") / self.config_name / "api" / "jsons"
                 output_dir.mkdir(parents=True, exist_ok=True)
                 output_file = output_dir / f"{round(lat,6)}_{round(lon,6)}_results.json"
                 with open(output_file, "w") as f:

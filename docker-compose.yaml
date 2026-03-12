@@ -1,6 +1,8 @@
 services:
   btg:
-    image: tkg:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: tkg
     volumes:
       - ./src:/app/src

@@ -35,6 +35,8 @@ class SpatialContextEmbedder:
             dbport=str(db_config["port"]),
             dbname=db_config["dbname"],
         )
+        
+        self.config_name = self.config.get("name", "default")
 
         # Setup data loader
         location_config = self.config["processing"]["location"]
@@ -71,7 +73,7 @@ class SpatialContextEmbedder:
         self.logger.info("Running Spatial Context Embedding Pipeline...")
         if self.mode == "api":
             self.logger.info("API Mode Initialization Phase Started")
-            api = API(coordinates=self.coordinates)
+            api = API(coordinates=self.coordinates, config_name=self.config_name)
             odlocations_df = api.data
         else:
             # Load coordinates and POIs
@@ -123,7 +125,7 @@ class SpatialContextEmbedder:
             results = api.process_coordinates(self.graph_constructer.get_graph())
             return results
         else:
-            self.visualizer = Visualizer(self.graph_constructer.get_graph())
+            self.visualizer = Visualizer(self.graph_constructer.get_graph(), self.config_name)
             self.visualizer.plot_graph_map()
 
 
